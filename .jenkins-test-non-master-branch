@@ -6,7 +6,6 @@ pipeline {
     GenericTrigger(
             genericVariables: [
                 [key: 'blah', value: '$..*'],
-                // [key: 'number', value: '$.number'],
                 [key: 'ref', value: '$.ref'],
                 [key: 'clone_url', value: '$.repository.clone_url']
             ],
