@@ -12,7 +12,8 @@ pipeline {
     triggers {
         GenericTrigger(
             genericVariables: [
-                [key: 'ref', value: '$.ref', regexpFilter: 'refs/heads/master']
+                // [key: 'ref', value: '$.ref', regexpFilter: 'refs/heads/master']
+                [key: 'ref', value: '$.ref', regexpFilter: 'XXX']
             ],
 
             // The token is required both in this script AND in the Jenkins pipeline GUI
