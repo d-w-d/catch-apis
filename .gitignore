@@ -1,0 +1,34 @@
+.env
+.venv
+.pid.txt
+.pid-old.txt
+.mypy_cache
+generated-models/**
+pytest_unit.xml
+.redundant/**
+**/*.log
+_test_generic_webhook
+flask_monitoringdashboard.db
+.redis
+.redis.pid
+node_modules
+
+# Flask_MonitorDasboard
+.dashboard.db
+.config.cfg
+
+# Misc
+.DS_Store
+temp
+**__pycache__**
+zbrowser.db
+zchecker.db
+.env-old
+.env-old2
+.cache
+catch.log
+dwd_notes
+temp*
+
+# emacs backup files
+*~
