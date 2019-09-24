@@ -54,7 +54,7 @@ d_start() {
         echo "Redis server is not running; beginning a daemon!"
         # NOTE: Options for redis-server are described in .redis/$REDIS_DIST/redis.conf
         .redis/$REDIS_DIST/src/redis-server \
-            --logfile logging-redis.log \
+            --logfile .redis/logging-redis.log \
             --pidfile .redis.pid \
             --loglevel verbose \
             --daemonize yes \
