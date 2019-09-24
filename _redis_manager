@@ -73,7 +73,7 @@ d_stop() {
         rm .redis/.redis.pid
         # Archive previous logs:
         cp .redis/logging-redis.log .redis/old-logs/logging-redis_last.log
-        mv .redis/logging-redis.log $(x=".redis/old-logs/logging-redis_last_"$(Date)"_.log" && echo ${x//" "/"_"})
+        mv .redis/logging-redis.log $(x=".redis/old-logs/logging-redis_last_"$(date)"_.log" && echo ${x//" "/"_"})
         printf " done!\n"
     else
         d_status
