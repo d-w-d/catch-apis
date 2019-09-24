@@ -20,7 +20,7 @@ else
 fi
 
 # Count how many gunicorn processes are running from this virtual environment:
-GUNICORN_PROCESSES=$(ps -ef | grep $VIRTUAL_ENV"/.venv\/bin\/gunicorn" | wc -l)
+GUNICORN_PROCESSES=$(($(ps -ef | grep $VIRTUAL_ENV"/bin/gunicorn" | wc -l) - 1))
 
 d_status() {
 
@@ -46,8 +46,8 @@ d_start() {
             --config ..\/.gunicorn.config.py \
             --pid ..\/.pid.txt \
             --name $APP_NAME \
-            --bind '127.0.0.1:'$PORT \
-            --daemon
+            --bind '127.0.0.1:'$PORT
+        # --daemon
         echo "-----------------------------------------------------"
         cd ..
     fi
