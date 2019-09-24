@@ -78,12 +78,12 @@ main() {
     ./_redis_manager status
 
     ### 10. Ensure npm is installed and required packages are globally available
-    if [[ ! -z $(which npm) ]]; then
+    if [ $(command -v npm) ]; then
         printf "\n\n"
         echo "Checking/installing required npm packages"
         printf "\n\n"
-        if [[ -z $(which nodemon) ]]; then npm install -g nodemon; fi
-        if [[ -z $(which pm2) ]]; then npm install -g pm2; fi
+        if [ $(command -v nodemon) ]; then npm install -g nodemon; fi
+        if [ $(command -v pm2) ]; then npm install -g pm2; fi
     else
         echo "No npm found!!!"
         return 1
