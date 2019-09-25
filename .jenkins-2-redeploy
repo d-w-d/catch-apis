@@ -56,7 +56,8 @@ pipeline {
             steps {
                 echo "START DEPLOYING ..."
                 sh '''
-                    cd       # Global env var (go to 'Manage Jenkins > Configure System > Global properties' and add vars)
+                    cd $CATCH_APIS_PATH       # Global env var (go to 'Manage Jenkins > Configure System > Global properties' and add vars)
+                    pwd
                     git pull
                     . $CATCH_APIS_PATH/_initial_setup jenkins
 
