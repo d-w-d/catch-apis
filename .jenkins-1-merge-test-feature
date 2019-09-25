@@ -17,7 +17,7 @@ pipeline {
                 echo 'Sourcing and building...'
                 sh '''
                     cat .jenkins-AAA
-                    source _initial_setup jenkins
+                    #source _initial_setup jenkins
                 '''
             }
         }
