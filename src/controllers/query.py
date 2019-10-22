@@ -86,7 +86,8 @@ class Query(FRP.Resource):
                 response.status_code = 200
             else:
                 # Spin out task to worker, return job_id
-                queue.enqueue(catch_moving_target, query, job_id)
+                queue.enqueue(catch_moving_target, query['target'],
+                              query['source'], query['cached'], job_id)
                 response = jsonify({
                     "message": "Enqueued search.",
                     "query": query,

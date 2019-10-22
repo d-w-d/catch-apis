@@ -31,4 +31,5 @@ def catch_moving_target(desg: str, source: str, cached: bool, job_id: uuid.UUID)
     config: Config = Config(database=db_engine_URI, log=CATCH_LOG)
 
     with Catch(config, save_log=True) as catch:
-        catch.query(desg, job_id, source=source, cached=cached)
+        catch.query(desg, job_id, source=source,
+                    cached=cached, eph_source='jpl')
