@@ -17,7 +17,7 @@ db_session: typing.Any = sqlalchemy.orm.sessionmaker(bind=db_engine)
 
 
 @contextmanager
-def DATA_PROVIDER_SESSION() -> typing.Any:
+def data_provider_session() -> typing.Any:
     """Provide a transactional scope around a series of operations."""
     session: Session = db_session()
     try:

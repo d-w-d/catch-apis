@@ -41,7 +41,7 @@ class ENV():
         "PROD_GUNICORN_INSTANCES") or -1)
 
     # Boolean properties; requires casting a string to bool
-    DEVELOPMENT_MODE: bool = 'False' != os.getenv("DEVELOPMENT_MODE")
+    DEVELOPMENT_MODE: bool = os.getenv("DEVELOPMENT_MODE") != 'False'
 
     # ENUM Properties
     DEPLOYMENT_ENV: EDeploymentEnvironment = APP_DEPLOYMENT_ENV

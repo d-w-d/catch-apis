@@ -16,7 +16,7 @@ from env import ENV, EDeploymentEnvironment as EDE
 
 # Import all restplus namespaces
 from .demo_routes import API as ns0
-from .neat import API as ns1
+from .query import API as ns1
 
 logger: logging.Logger = logging.getLogger(__name__)
 logger.info('"<><><> IMPORTING CONTROLLERS <><><>"')
@@ -25,13 +25,13 @@ logger.info('"<><><> IMPORTING CONTROLLERS <><><>"')
 # Choose port to run app locally based on deployment environment
 if ENV.DEPLOYMENT_ENV == EDE.PROD:
     URL_PREFIX = '/catch'
-    title_suffix = ''
+    TITLE_SUFFIX = ''
 elif ENV.DEPLOYMENT_ENV == EDE.STAGE:
     URL_PREFIX = '/catch-stage'
-    title_suffix = '[STAGE]'
+    TITLE_SUFFIX = '[STAGE]'
 elif ENV.DEPLOYMENT_ENV == EDE.DEV:
     URL_PREFIX = '/catch-dev'
-    title_suffix = '[DEV]'
+    TITLE_SUFFIX = '[DEV]'
 else:
     raise Exception('Unrecognized DEPLOYMENT_ENV!')
 
@@ -45,7 +45,7 @@ blueprint: Blueprint = Blueprint(
 # Initiate RestPlusApi object and associate it with blueprint
 REST_PLUS_APIS = Api(
     blueprint,
-    title='CATCH APIS '+str(title_suffix),
+    title='CATCH APIS '+str(TITLE_SUFFIX),
     version='1.0',
     description='Flask APIs for CATCH Tool',
     doc='/docs'
@@ -56,6 +56,8 @@ REST_PLUS_APIS.add_namespace(ns0)
 REST_PLUS_APIS.add_namespace(ns1)
 
 # Add error handlers:
+
+
 @REST_PLUS_APIS.errorhandler
 def default_error_handler(exception: Exception) -> Tuple[Response, Any]:
     """ -- Default Error Handler -- """
