@@ -76,6 +76,7 @@ class Query(FRP.Resource):
                 data = service.query(query['target'], job_id,
                                      source=query['source'],
                                      cached=True)
+
                 response = jsonify({
                     "message": "Returning cached results.",
                     "query": query,

@@ -1,5 +1,5 @@
 """
-/query route namespace and database tables.
+/query route namespace and data models.
 """
 
 from typing import Dict, Union

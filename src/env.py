@@ -33,7 +33,11 @@ class ENV():
     DB_PASSWORD: Optional[str] = os.getenv("DB_PASSWORD")
     DB_DATABASE: Optional[str] = os.getenv("DB_DATABASE")
     DASHBOARD_CONFIG: Optional[str] = os.getenv("DASHBOARD_CONFIG")
-    NEAT_CUTOUT_BASE_URL: str = os.getenv('NEAT_CUTOUT_BASE_URL', default='')
+    CATCH_FULLFRAME_BASE_URL: str = os.getenv('CATCH_FULLFRAME_BASE_URL',
+                                              default='')
+    CATCH_CUTOUT_BASE_URL: str = os.getenv('CATCH_CUTOUT_BASE_URL', default='')
+    CATCH_ARCHIVE_PATH: str = os.getenv('CATCH_ARCHIVE_PATH', default='')
+    CATCH_CUTOUT_PATH: str = os.getenv('CATCH_CUTOUT_PATH', default='')
 
     # Numeric properties
     REDIS_PORT: int = int(os.getenv("REDIS_PORT") or -1)

@@ -15,8 +15,9 @@ from sqlalchemy.orm.exc import NoResultFound
 from env import ENV, EDeploymentEnvironment as EDE
 
 # Import all restplus namespaces
-from .demo_routes import API as ns0
-from .query import API as ns1
+from .demo_routes import API as demos
+from .query import API as query
+from .images import API as images
 
 logger: logging.Logger = logging.getLogger(__name__)
 logger.info('"<><><> IMPORTING CONTROLLERS <><><>"')
@@ -52,8 +53,9 @@ REST_PLUS_APIS = Api(
 )
 
 # Combine Namespaces
-REST_PLUS_APIS.add_namespace(ns0)
-REST_PLUS_APIS.add_namespace(ns1)
+REST_PLUS_APIS.add_namespace(query)
+REST_PLUS_APIS.add_namespace(images)
+REST_PLUS_APIS.add_namespace(demos)
 
 # Add error handlers:
 
