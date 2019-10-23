@@ -1,15 +1,16 @@
 """Tasks for CATCH searches."""
-import os
 import uuid
 
-from catch import Catch, Config
+from redis import Redis, StrictRedis
 
-from services.database_provider import db_engine_URI
+from tasks import RQueues
+from services.database_provider import catch_manager
 
-CATCH_LOG: str = os.getenv('CATCH_LOG', default='/dev/null')
+strict_redis: Redis = StrictRedis()
 
 
-def catch_moving_target(desg: str, source: str, cached: bool, job_id: uuid.UUID) -> None:
+def catch_moving_target(desg: str, source: str, cached: bool,
+                        job_id: uuid.UUID) -> None:
     """Search for target in CATCH surveys.
 
     Parameters
@@ -28,8 +29,8 @@ def catch_moving_target(desg: str, source: str, cached: bool, job_id: uuid.UUID)
 
     """
 
-    config: Config = Config(database=db_engine_URI, log=CATCH_LOG)
-
-    with Catch(config, save_log=True) as catch:
+    with catch_manager(save_log=True) as catch:
         catch.query(desg, job_id, source=source,
                     cached=cached, eph_source='jpl')
+
+    strict_redis.publish(RQueues.FINISH_JOBS, job_id.hex)

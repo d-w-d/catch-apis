@@ -3,7 +3,7 @@
 import os
 import uuid
 import logging
-from typing import Union, Optional
+from typing import List, Tuple
 
 import numpy as np
 import astropy.units as u
@@ -13,6 +13,8 @@ from astropy.nddata import CCDData
 from astropy.io import fits
 
 from env import ENV
+
+logger: logging.Logger = logging.getLogger(__name__)
 
 
 def neat_cutout(productid: str, job_id: uuid.UUID, ra: float, dec: float,
@@ -34,8 +36,6 @@ def neat_cutout(productid: str, job_id: uuid.UUID, ra: float, dec: float,
         Cutout size, arcminutes.
 
     """
-
-    logger = logging.Logger(__name__)
 
     ra = ra % 360
     dec = min(max(dec, -90), 90)
@@ -93,8 +93,10 @@ def neat_cutout(productid: str, job_id: uuid.UUID, ra: float, dec: float,
     y: np.ndarray
     x, y = wcs.all_world2pix(corners, 0).T.astype(int)
 
-    i: slice = np.s_[max(0, y.min()):min(y.max(), im.shape[0]),
-                     max(0, x.min()):min(x.max(), im.shape[1])]
+    i: Tuple[slice, slice] = np.s_[
+        max(0, y.min()):min(y.max(), im.shape[0]),
+        max(0, x.min()):min(x.max(), im.shape[1])
+    ]
     if i[0].start == i[0].stop or i[1].start == i[1].stop:
         logger.error('Cutout has a length = 0 dimension.')
         return

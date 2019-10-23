@@ -82,7 +82,8 @@ class NeatCutouts(FRP.Resource):
 
                 # Spin out task to worker, return job_id
                 queue.enqueue(neat_cutout, query['productid'], job_id,
-                              query['ra'], query['dec'], size=query['size'])
+                              query['ra'], query['dec'], size=query['size'],
+                              job_id=job_id.hex)
 
             response = jsonify({
                 "message": message,

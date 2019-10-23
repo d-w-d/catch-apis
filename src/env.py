@@ -38,6 +38,7 @@ class ENV():
     CATCH_CUTOUT_BASE_URL: str = os.getenv('CATCH_CUTOUT_BASE_URL', default='')
     CATCH_ARCHIVE_PATH: str = os.getenv('CATCH_ARCHIVE_PATH', default='')
     CATCH_CUTOUT_PATH: str = os.getenv('CATCH_CUTOUT_PATH', default='')
+    CATCH_LOG: str = os.getenv('CATCH_LOG', default='/dev/null')
 
     # Numeric properties
     REDIS_PORT: int = int(os.getenv("REDIS_PORT") or -1)

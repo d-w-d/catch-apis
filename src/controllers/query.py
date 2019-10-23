@@ -42,6 +42,7 @@ class Query(FRP.Resource):
     @FRP.cors.crossdomain(origin='*')
     def get(self: 'Query') -> Response:
         """Query for moving target."""
+        from . import URL_PREFIX    # avoid circular dependency
 
         # Extract params from URL
         query: Dict[str, Union[str, bool]] = {
@@ -66,35 +67,42 @@ class Query(FRP.Resource):
             # unique job ID
             job_id: uuid.UUID = uuid.uuid4()
 
+            results_url: str = '{}/{}/caught/{}'.format(
+                request.url_root.strip('/'), URL_PREFIX.strip('/'), job_id.hex)
+
+            payload: Dict[str, Union[Dict[str, Union[str, bool]], str]] = {
+                "message": "",
+                "query": query,
+                "job_id": job_id.hex,
+                "results": results_url
+            }
+
             cached = False
             if query['cached']:
                 # check Catch Queries cache for previous search results
                 cached = service.check_cache(query['target'], query['source'])
 
             if cached:
-                # return cached results
-                data = service.query(query['target'], job_id,
-                                     source=query['source'],
-                                     cached=True)
+                # store cached results in catch_queries table:
+                service.query(query['target'], job_id,
+                              source=query['source'], cached=True)
 
-                response = jsonify({
-                    "message": "Returning cached results.",
-                    "query": query,
-                    "count": len(data),
-                    "job_id": job_id.hex,
-                    "data": FRP.marshal(data, App.caught_data)
-                })
-                response.status_code = 200
+                payload['message'] = (
+                    'Cached query.  Retrieve data from results URL.'
+                )
             else:
-                # Spin out task to worker, return job_id
+                # Spin out task to worker
                 queue.enqueue(catch_moving_target, query['target'],
-                              query['source'], query['cached'], job_id)
-                response = jsonify({
-                    "message": "Enqueued search.",
-                    "query": query,
-                    "job_id": job_id.hex
-                })
-                response.status_code = 200
+                              query['source'], query['cached'], job_id,
+                              job_id=job_id.hex)
+
+                payload['message'] = (
+                    'Enqueued search.  Listen to event stream until job'
+                    ' completed, then retrieve data from results URL.'
+                )
+
+            response = jsonify(payload)
+            response.status_code = 200
 
         return response
 
