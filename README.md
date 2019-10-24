@@ -92,10 +92,6 @@ The following tools/conventions are used to promote codebase quality amidst mult
 - pytest
   - Unit-test capabilities are in place; just run `sh _run_tests` to execute them. Failed tests will cause merge requests to be rejected if attempted at origin. Tests are recommended mainly for functions that you expect to be established for the long haul.
 
-## GENERATING SQLALCHEMY-ORM MODELS
-
-This only needs to be done when the DB schema gets changed. Run `_generate_models` to generate an output of the latest DB schema based on the state of the remote DB, and translated into sqlalchemy-ORM syntax in `generated-models/gen-models.txt`, then we essentially copy-paste those contents into `src/models/models.py`
-
 ## TODOs
 
 ## DEVELOPMENT NOTES
