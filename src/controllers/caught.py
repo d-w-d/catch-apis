@@ -9,7 +9,7 @@ from typing import Dict, Union
 import flask_restplus as FRP
 from flask import Response, jsonify
 
-from models.caught import App
+from models.caught import App, COLUMN_LABELS
 import services.caught as service
 from util import jsonify_output
 
@@ -24,21 +24,20 @@ class Caught(FRP.Resource):
 
     @API.doc('--caught/--')
     @FRP.cors.crossdomain(origin='*')
+    @jsonify_output
+    @API.marshal_with(App.caught_model)
     def get(self: 'Caught', job_id: Union[str, uuid.UUID]) -> Response:
         """Caught moving target data."""
 
         # validate job_id format
         job_id = uuid.UUID(str(job_id), version=4)
 
-        # retrieve data
         data: dict = service.caught(job_id)
-
-        response: Response = jsonify({
+        response: Dict[str, Union[str, dict, int]] = {
             "count": len(data),
             "job_id": job_id.hex,
-            "data": FRP.marshal(data, App.caught_data)
-        })
-        response.status_code = 200
+            "data": data
+        }
         return response
 
 
@@ -49,8 +48,7 @@ class CaughtLabels(FRP.Resource):
     @API.doc('--caught/labels--')
     @FRP.cors.crossdomain(origin='*')
     @jsonify_output
-    def get(self: 'CaughtLabels') -> Dict[str, Dict[str, str]]:
+    def get(self: 'CaughtLabels') -> Dict[str, Dict[str, Union[str, int]]]:
         """Caught moving object table labels."""
-        data: Dict[str, Dict[str, str]] = (
-            service.column_labels('/'))
+        data: Dict[str, Dict[str, Union[str, int]]] = COLUMN_LABELS['/']
         return data
