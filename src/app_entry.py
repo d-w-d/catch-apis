@@ -15,9 +15,9 @@ if ENV.DEPLOYMENT_TIER == EDeploymentTier.PROD:
 elif ENV.DEPLOYMENT_TIER == EDeploymentTier.STAGE:
     PORT = 5001
 elif ENV.DEPLOYMENT_TIER == EDeploymentTier.SANDBOX:
-    PORT = 5003
+    PORT = 5002
 elif ENV.DEPLOYMENT_TIER == EDeploymentTier.LOCAL:
-    PORT = 5004
+    PORT = 5003
 else:
     raise Exception('Unrecognized DEPLOYMENT_ENV')
 
