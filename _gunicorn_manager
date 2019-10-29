@@ -8,7 +8,7 @@
 # ============================================================================
 
 # Load vars defined in .env
-$(cat .env | sed 's/^/export /')
+source _load_env_vars
 
 # Determine port
 if [[ $DEPLOYMENT_ENV == 'PROD' ]]; then

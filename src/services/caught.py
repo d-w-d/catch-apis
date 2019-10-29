@@ -1,6 +1,6 @@
 """Caught moving object data services."""
 import uuid
-from typing import List
+from typing import List, Dict, Union
 
 from catch.schema import Found, Obs, Obj, Caught, CatchQueries
 
@@ -30,12 +30,13 @@ def caught(job_id: uuid.UUID) -> List[dict]:
         session.expunge_all()
 
     # unpack into list of dictionaries for marshaling
-    found: List[
-        Dict[str, Union[Found, Obs, Obj, str, float, int, bool, None]]
-    ]
+    found: List[Dict[str, Union[Found, Obs, Obj, str, float, int, bool, None]]]
     found = []
     for row in data:
         found.append(row._asdict())
+
+        print(">>>>")
+        print(row)
 
         # some extras
         found[-1]['cutout_url'] = images.build_url(
