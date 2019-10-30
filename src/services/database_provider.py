@@ -41,6 +41,7 @@ def data_provider_session() -> Iterator[Session]:
 
 
 @contextmanager
-def catch_manager(save_log=True) -> Iterator[Catch]:
+def catch_manager(save_log: bool = True) -> Iterator[Catch]:
+    """ TBD """
     with Catch(catch_config, save_log=save_log) as catch:
         yield catch
