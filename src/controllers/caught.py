@@ -26,7 +26,7 @@ class Caught(FRP.Resource):
     @FRP.cors.crossdomain(origin='*')
     @jsonify_output
     @API.marshal_with(App.caught_model)
-    def get(self: 'Caught', job_id: Union[str, uuid.UUID]) -> Response:
+    def get(self: 'Caught', job_id: Union[str, uuid.UUID]) -> Dict[str, Union[str, dict, int]]:
         """Caught moving target data."""
 
         # validate job_id format
@@ -38,8 +38,7 @@ class Caught(FRP.Resource):
             "job_id": job_id.hex,
             "data": data
         }
-        response: Response = jsonify(payload)
-        return response
+        return payload
 
 
 @API.route("/labels")

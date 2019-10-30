@@ -35,6 +35,11 @@ def caught(job_id: uuid.UUID) -> List[dict]:
     found = []
     for row in data:
         found.append(row._asdict())
+
+        print("#########")
+        print(found[-1])
+        print("#########")
+
         # some extras
         cutout_url: str = images.build_url(
             row.Obs.productid, ra=row.Found.ra, dec=row.Found.dec,

@@ -31,13 +31,21 @@ def catch_moving_target(desg: str, source: str, cached: bool,
 
     """
 
+    print('Debug0')
+
     with catch_manager(save_log=True) as catch:
         catch.query(desg, job_id, source=source,
                     cached=cached, eph_source='jpl')
 
+    print('Debug1')
+
     cutout_moving_targets(job_id, overwrite=True)
 
+    print('Debug2')
+
     strict_redis.publish(RQueues.FINISH_JOBS, job_id.hex)
+
+    print('Debug3')
 
 
 def cutout_moving_targets(job_id: uuid.UUID, overwrite: bool = False) -> None:

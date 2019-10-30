@@ -42,7 +42,7 @@ class Query(FRP.Resource):
     @FRP.cors.crossdomain(origin='*')
     @jsonify_output
     @API.marshal_with(App.query_model)
-    def get(self: 'Query') -> Response:
+    def get(self: 'Query') -> Dict[str, Union[str, Dict[str, Union[str, bool]]]]:
         """Query for moving target."""
         from . import URL_PREFIX    # avoid circular dependency
 

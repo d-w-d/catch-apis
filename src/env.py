@@ -18,7 +18,7 @@ class EDeploymentTier(Enum):
 raw_deployment_tier: Optional[str] = os.getenv("DEPLOYMENT_TIER")
 APP_DEPLOYMENT_TIER: EDeploymentTier = EDeploymentTier.LOCAL
 if raw_deployment_tier == "SANDBOX":
-    APP_DEPLOYMENT_TIER = EDeploymentTier.STAGE
+    APP_DEPLOYMENT_TIER = EDeploymentTier.SANDBOX
 if raw_deployment_tier == "STAGE":
     APP_DEPLOYMENT_TIER = EDeploymentTier.STAGE
 if raw_deployment_tier == "PROD":
