@@ -17,7 +17,8 @@ main() {
 
     ### 0. Get rid of cached versions
     rm -rf .mypy_cache
-    rm -rf src/__pycache__
+    # rm -rf src/__pycache__
+    find . | grep -E "(__pycache__|\.pyc|\.pyo$)" | xargs rm -rf
 
     ### 1. Load vars defined in .env
     if [[ -f .env ]]; then

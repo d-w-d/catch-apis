@@ -3,11 +3,10 @@
 import os
 from enum import Enum, auto
 from typing import Optional
-from dotenv import load_dotenv
-load_dotenv(verbose=True)
+from dotenv import load_dotenv, find_dotenv
+load_dotenv(find_dotenv(), override=True, verbose=True)
 
 
-# Match DEPLOYMENT_ENV string in .env to equivalent ENUM
 class EDeploymentTier(Enum):
     """ Enum possible values of deployment tier """
     LOCAL = auto()
@@ -58,5 +57,16 @@ class ENV():
     IS_DAEMON: bool = os.getenv("IS_DAEMON") == 'TRUE'
 
 
+# Debugging block
+# print("=========================")
 # print(ENV.PROD_GUNICORN_INSTANCES)
-# print(ENV.DEVELOPMENT_MODE)
+# print(ENV.DEPLOYMENT_TIER)
+# print(ENV.DB_DATABASE)
+# print(ENV.DB_PASSWORD)
+# print(ENV.DB_USERNAME)
+# print()
+# print(ENV.CATCH_LOG)
+# print(ENV.CATCH_ARCHIVE_PATH)
+# print(ENV.CATCH_CUTOUT_PATH)
+# print(ENV.CATCH_THUMBNAIL_PATH)
+# print("=========================")

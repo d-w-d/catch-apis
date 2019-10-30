@@ -9,8 +9,8 @@ import sqlalchemy
 from sqlalchemy.engine import Engine
 from sqlalchemy.orm.session import Session, sessionmaker
 from sqlalchemy.exc import SQLAlchemyError, DBAPIError
-from catch import Catch, Config
 
+from catch import Catch, Config
 from env import ENV
 
 # Build URI and instantiate data-provider service
