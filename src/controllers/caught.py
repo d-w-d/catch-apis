@@ -48,8 +48,7 @@ class CaughtLabels(FRP.Resource):
     @API.doc('--caught/labels--')
     @FRP.cors.crossdomain(origin='*')
     @jsonify_output
-    def get(self: 'CaughtLabels') -> Response:
+    def get(self: 'CaughtLabels') -> Dict[str, Dict[str, Union[str, int]]]:
         """Caught moving object table labels."""
         data: Dict[str, Dict[str, Union[str, int]]] = COLUMN_LABELS['/']
-        response: Response = jsonify(data)
-        return response
+        return data
