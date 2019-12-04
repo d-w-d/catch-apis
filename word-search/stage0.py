@@ -9,7 +9,7 @@ from time import sleep
 from typing import List
 from bs4 import BeautifulSoup, element
 from requests import Response, request
-from small_body import SmallBody
+from models.small_body import SmallBody
 
 
 # Compute dirname of this file

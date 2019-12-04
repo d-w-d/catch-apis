@@ -9,7 +9,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.engine import Engine
 from sqlalchemy.orm import sessionmaker, session as sqSession
 from sqlalchemy.dialects.postgresql import insert, dml
-from small_body import SmallBody, base
+from models.small_body import SmallBody, base
 from env import ENV
 
 # Import small body data output to csv file
@@ -40,7 +40,6 @@ db_engine_URI: str = (
     f"/{ENV.DB_DATABASE}")
 db: Engine = create_engine(db_engine_URI, pool_recycle=3600)
 
-db = create_engine(db_engine_URI)
 # Create tables if not exist
 base.metadata.create_all(db)
 # Create session

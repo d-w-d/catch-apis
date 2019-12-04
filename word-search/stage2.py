@@ -42,8 +42,8 @@ for i in list(range(0, retrievals)):
                 SELECT *, getSearchText(small_bodies.*) as concat FROM small_bodies
             ) yyy
             -- WHERE concat % 'van gall'
-            -- ORDER BY (concat <-> 'van gall')
-            WHERE concat ILIKE '%van gaal%' -- Run this only when similarity is unavailable
+            ORDER BY (concat <-> 'van gall')
+            -- WHERE concat ILIKE '%van gaal%' -- Run this only when similarity is unavailable
             LIMIT 10;
         """
     )

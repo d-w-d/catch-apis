@@ -20,6 +20,7 @@ from .query import API as query
 from .images import API as images
 from .stream import API as stream
 from .caught import API as caught
+from .small_body import API as small_body
 
 logger: logging.Logger = logging.getLogger(__name__)
 logger.info('"<><><> IMPORTING CONTROLLERS <><><>"')
@@ -65,6 +66,7 @@ REST_PLUS_APIS.add_namespace(caught)
 REST_PLUS_APIS.add_namespace(images)
 REST_PLUS_APIS.add_namespace(stream)
 REST_PLUS_APIS.add_namespace(demos)
+REST_PLUS_APIS.add_namespace(small_body)
 
 # Add error handlers:
 
