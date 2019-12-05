@@ -9,7 +9,7 @@ from time import sleep
 from typing import List
 from bs4 import BeautifulSoup, element
 from requests import Response, request
-from models.small_body import SmallBody
+from models.name_search import NameSearch
 
 
 # Compute dirname of this file
@@ -65,7 +65,7 @@ target_content_lines: List[str] = target_content.split('\n')
 
 
 # Parse lines of text; convert to csv-style lines
-small_bodies: List[SmallBody] = []
+name_search_items: List[NameSearch] = []
 print(">>> Parsing html...")
 for i, line in enumerate(target_content_lines):
 
@@ -94,8 +94,8 @@ for i, line in enumerate(target_content_lines):
         accentedName = temp1[1]
 
         # Save items to list of SmallBody entries
-        small_bodies.append(
-            SmallBody(
+        name_search_items.append(
+            NameSearch(
                 numid=int(number),
                 accented=accentedName,
                 unaccented=unaccentedName
@@ -111,6 +111,6 @@ output_file: str = dataDirPath + "/minor_planets_names.csv"
 print(">>> Saving parsed html...")
 with open(output_file, 'w') as f:
     f.write("numid,unaccented,accented\n")
-    for sb in small_bodies:
-        if sb.accented and sb.unaccented and sb.numid:
-            f.write(str(sb.numid)+","+sb.accented+","+sb.unaccented+"\n")
+    for item in name_search_items:
+        if item.accented and item.unaccented and item.numid:
+            f.write(str(item.numid)+","+item.accented+","+item.unaccented+"\n")

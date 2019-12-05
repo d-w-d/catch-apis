@@ -19,7 +19,7 @@ logger: logging.Logger = logging.getLogger(__name__)
 
 
 @API.route("/name")
-class SearchName(FRP.Resource):
+class NameSearch(FRP.Resource):
     """Controller class for testing target names."""
 
     @API.doc('--search/name--')
@@ -30,7 +30,7 @@ class SearchName(FRP.Resource):
     @FRP.cors.crossdomain(origin='*')
     @jsonify_output
     @API.marshal_with(App.search_name_model)
-    def get(self: 'SearchName') -> Dict[str, Union[str, dict]]:
+    def get(self: 'NameSearch') -> Dict[str, Union[str, dict]]:
         """Search moving target name."""
 
         name: str = request.args.get('name', '', str)

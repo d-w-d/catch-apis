@@ -10,20 +10,20 @@ from stage1 import session
 # Create function to combine columns into one searchable piece of text
 q = session.execute(
     """
-        CREATE OR REPLACE FUNCTION getSearchText(small_bodies) RETURNS text AS $$
+        CREATE OR REPLACE FUNCTION getSearchText(name_search) RETURNS text AS $$
                         SELECT $1.unaccented || ' ' || $1.numid::text as concat;
         $$ LANGUAGE SQL;
-        -- SELECT getSearchText(small_bodies.*) FROM small_bodies;
+        -- SELECT getSearchText(name_search.*) FROM name_search;
     """
 )
 session.commit()
 
 
-# Create gin index; see not in readme
+# Create gin index; see note in readme on difficulty with indexes and fuzzy searching
 # Requires running `CREATE EXTENSION pg_trgm;`
 # q = session.execute(
 #     """
-#         CREATE INDEX IF NOT EXISTS get_search_text_function_idx ON small_bodies USING gin(getSearchText(small_bodies.*) gin_trgm_ops);
+#         CREATE INDEX IF NOT EXISTS get_search_text_function_idx ON name_search USING gin(getSearchText(name_search.*) gin_trgm_ops);
 #     """
 # )
 # session.commit()
@@ -39,8 +39,8 @@ for i in list(range(0, retrievals)):
     q = session.execute(
         """
             SELECT * from (
-                SELECT *, getSearchText(small_bodies.*) as concat FROM small_bodies
-            ) yyy
+                SELECT *, getSearchText(name_search.*) as concat FROM name_search
+            ) arbitrary_name
             -- WHERE concat % 'van gall'
             ORDER BY (concat <-> 'van gall')
             -- WHERE concat ILIKE '%van gaal%' -- Run this only when similarity is unavailable

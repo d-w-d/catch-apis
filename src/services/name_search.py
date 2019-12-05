@@ -1,17 +1,19 @@
-"""Caught moving object data services."""
+"""
+    Caught moving object data services
+"""
 
 from typing import List
 from .database_provider import data_provider_session, Session, db_engine
-from models.small_body import base
+from models.name_search import base
 
 
-# Create SmallBody table if not exists; make db aware of this model
+# Create NameSearch table if not exists; make db aware of this model
 base.metadata.create_all(db_engine)
 
 
-def name_search(search_name: str) -> List:
+def name_search(search_submission: str) -> List:
     """
-        XXX
+        Function to query DB for matching names
     """
     found: List = []
 
@@ -22,19 +24,17 @@ def name_search(search_name: str) -> List:
                 SELECT unaccented, numid from (
                     SELECT *, getSearchText(small_bodies.*) as concat FROM small_bodies
                 ) arbitrary_name
-                ORDER BY (concat <-> '{search_name}')
+                ORDER BY (concat <-> '{search_submission}')
                 LIMIT 10;
             """
 
             # SELECT * from (
             #     SELECT *, getSearchText(small_bodies.*) as concat FROM small_bodies
-            # ) yyy
+            # ) arbitrary_name
             # -- WHERE concat % 'van gall'
             # ORDER BY (concat <-> 'van gall')
             # -- WHERE concat ILIKE '%van gaal%' -- Run this only when similarity is unavailable
             # LIMIT 10;
-
-
         )
 
         print("<><><><><>")

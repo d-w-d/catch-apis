@@ -10,10 +10,10 @@ from sqlalchemy.ext.declarative import declarative_base
 base: typing.Any = declarative_base()
 
 
-class SmallBody(base):
-    """ ORM Small-Body Class"""
+class NameSearch(base):
+    """ ORM Class for small-bodies name search"""
 
-    __tablename__ = 'small_bodies'
+    __tablename__ = 'name_search'
     numid = Column(Integer, primary_key=True)
     unaccented = Column(String)
     accented = Column(String)
@@ -24,7 +24,7 @@ class SmallBody(base):
         self.unaccented = unaccented
 
     def __repr__(self) -> str:
-        return "SmallBody()"
+        return "NameSearch()"
 
     def __str__(self) -> str:
-        return "<Class SmallBody: "+str(self.accented)+" "+str(self.unaccented)+" "+str(self.numid)+">"
+        return "<Class NameSearch: "+str(self.accented)+" "+str(self.unaccented)+" "+str(self.numid)+">"
