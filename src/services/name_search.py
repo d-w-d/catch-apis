@@ -21,8 +21,8 @@ def name_search(search_submission: str) -> List:
     with data_provider_session() as session:
         q = session.execute(
             f"""
-                SELECT target_text, body_type FROM name_search
-                ORDER BY (concat <-> '{search_submission}')
+                SELECT target_text, search_text, body_type FROM name_search
+                ORDER BY (search_text <-> '{search_submission}')
                 LIMIT 10;
             """
         )
