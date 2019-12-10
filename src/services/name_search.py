@@ -21,20 +21,10 @@ def name_search(search_submission: str) -> List:
     with data_provider_session() as session:
         q = session.execute(
             f"""
-                SELECT unaccented, numid from (
-                    SELECT *, getSearchText(small_bodies.*) as concat FROM small_bodies
-                ) arbitrary_name
+                SELECT target_text, body_type FROM name_search
                 ORDER BY (concat <-> '{search_submission}')
                 LIMIT 10;
             """
-
-            # SELECT * from (
-            #     SELECT *, getSearchText(small_bodies.*) as concat FROM small_bodies
-            # ) arbitrary_name
-            # -- WHERE concat % 'van gall'
-            # ORDER BY (concat <-> 'van gall')
-            # -- WHERE concat ILIKE '%van gaal%' -- Run this only when similarity is unavailable
-            # LIMIT 10;
         )
 
         print("<><><><><>")
@@ -42,8 +32,8 @@ def name_search(search_submission: str) -> List:
             print(p)
             found.append(
                 {
-                    "unaccented": p[0],
-                    "numid": p[1],
+                    "target_text": p[0],
+                    "body_type": p[1],
                 }
             )
 

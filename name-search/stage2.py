@@ -37,7 +37,7 @@ with open(name_search_items_csv_file, encoding="utf-8") as content:
         except:
             # Header line will be rejected
             print('Rejected >>> '+str(parts) +
-                  '  >>>'+str(parts[2].strip())+'<<<')
+                  '>>>'+str(parts[2].strip())+'<<<')
             print(type(EBodyType['COMET']))
             print(EBodyType['COMET'].name)
 
@@ -70,7 +70,6 @@ def uploadNameSearchInstancesToDB() -> None:
     isUpserting = 0  # Toggle between upsert behavior and simple-upload
     for item in name_search_items:
         if isUpserting:
-
             # Use this for simple insertion; conflicts cause errors
             stmt: dml.Insert = insert(NameSearch).values(
                 target_text=item.target_text,
