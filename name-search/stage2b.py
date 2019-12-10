@@ -9,10 +9,9 @@ from sqlalchemy import create_engine
 from sqlalchemy.engine import Engine
 from sqlalchemy.orm import sessionmaker, session as sqSession
 from sqlalchemy.dialects.postgresql import insert, dml
-from models.name_search import NameSearch, base, EBodyType
+from models.name_search import NameSearch, base
 from env import ENV
 
-from stage0 import name_search_items_csv_file
 
 ################################################################
 # Import search-name data from csv file created in earlier stage
@@ -21,28 +20,30 @@ from stage0 import name_search_items_csv_file
 # Init list of NameSearch instances
 name_search_items: List[NameSearch] = []
 
+# Build paths to raw data
+dirname: str = os.path.dirname(os.path.realpath(__file__))
+data_dir_path: str = dirname + '/mpcdata'
+input_file: str = data_dir_path + "/minor_planets_names.csv"
+
 # Add asteroid data in csv file as NameSearch instances
-with open(name_search_items_csv_file, encoding="utf-8") as content:
+with open(input_file, encoding="utf-8") as content:
     lines = content.readlines()
     for line in lines:
         parts = line.split(',')
         try:
             name_search_items.append(
                 NameSearch(
-                    target_text=parts[0].strip(),
-                    search_text=parts[1].strip(),
-                    body_type=EBodyType[parts[2].strip()]
+                    numid=int(parts[0].strip()),
+                    accented=parts[1].strip(),
+                    unaccented=parts[2].strip()
                 )
             )
         except:
             # Header line will be rejected
-            print('Rejected >>> '+str(parts) +
-                  '  >>>'+str(parts[2].strip())+'<<<')
-            print(type(EBodyType['COMET']))
-            print(EBodyType['COMET'].name)
+            print('Rejected >>> '+str(parts))
 
+# Add comet data in json file as NameSearch instances
 
-# exit()
 
 #########################
 # Build db-connection URI
@@ -63,26 +64,23 @@ session: sqSession.Session = Session()
 # Build function to save entries to DB
 ########################################
 
-# exit()
-
 
 def uploadNameSearchInstancesToDB() -> None:
     isUpserting = 0  # Toggle between upsert behavior and simple-upload
     for item in name_search_items:
         if isUpserting:
-
             # Use this for simple insertion; conflicts cause errors
             stmt: dml.Insert = insert(NameSearch).values(
-                target_text=item.target_text,
-                search_text=item.search_text,
-                body_type=item.body_type
+                accented=item.accented,
+                unaccented=item.unaccented,
+                numid=item.numid
             )
             # Use this for updating on conflict
             stmt2: dml.Insert = stmt.on_conflict_do_update(
-                constraint='name_search_pkey',  # Get this from `\d small_bodies;`
+                constraint='small_bodies_pkey',  # Get this from `\d small_bodies;`
                 set_=dict(
-                    search_text=item.search_text,
-                    body_type=item.body_type
+                    accented=item.accented,
+                    unaccented=item.unaccented,
                 )
             )
             # Use this for ignoring on conflict
