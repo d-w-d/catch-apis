@@ -5,7 +5,7 @@
 from typing import List
 from .database_provider import data_provider_session, Session, db_engine
 from models.name_search import base
-from query import TargetTypePatterns
+from .query import TargetTypePatterns
 
 
 # Create NameSearch table if not exists; make db aware of this model
@@ -16,7 +16,7 @@ def name_search(search_submission: str) -> List:
     """
         Function to query DB for fuzzy name search
     """
-    found: List = []
+    found_names: List = []
 
     # Clean up search_submission
 
@@ -39,8 +39,8 @@ def name_search(search_submission: str) -> List:
             #
             f"""
                 PREPARE nameSearchPlan (text) AS
-                    SELECT target_text, search_text, body_type FROM name_search
-                    ORDER BY (search_text <-> $1)
+                    SELECT * FROM name_search
+                    ORDER BY (name_search.comparison_text <-> $1)
                     LIMIT 10;
                 -- EXECUTE fooplan('{search_submission}');
             """
@@ -64,14 +64,16 @@ def name_search(search_submission: str) -> List:
             """
         )
 
-        # print("<><><><><>")
-        # for p in r:
-        #     print(p)
-        #     found.append(
-        #         {
-        #             "target_text": p[0],
-        #             "body_type": p[1],
-        #         }
-        #     )
+        print("<><><><><>")
+        for p in r:
+            print(p)
+            found_names.append(
+                {
+                    "target": p[0],
+                    "comparison_text": p[1],
+                    "display_text": p[2],
+                    "body_type": p[3],
+                }
+            )
 
-    return found
+    return found_names

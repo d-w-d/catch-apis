@@ -14,7 +14,7 @@ from requests import Response, request
 from models.name_search import NameSearch, EBodyType
 
 from stage0 import asteroid_json_file, comet_html_file, dataDirPath, name_search_items_csv_file
-
+from services.query import parse_target_name
 
 ###############################################
 # Define our array for all comets and asteroids
@@ -68,9 +68,10 @@ for i, line in enumerate(target_content_lines):
         # Save items to list of SmallBody entries
         name_search_items.append(
             NameSearch(
-                search_text=number + " " + unaccentedName,
-                target_text=unaccentedName,
-                body_type=EBodyType.ASTEROID
+                target=parse_target_name(line)[1],
+                comparison_text=number + " " + unaccentedName,
+                display_text=number + " " + unaccentedName,
+                body_type=parse_target_name(line)[0]
             )
         )
     except:
@@ -115,18 +116,16 @@ with open(asteroid_json_file) as json_file:
 
         # Get designation text (comes in various formats)
         desig: str = asteroid_datum['Designation_and_name']
-        # print(desig)
 
-        # For now, just extract text we know we can format: '65P/Gunn'
-        m = re.match(r'^\d+P', desig)
-        if bool(m):
-            name_search_items.append(
-                NameSearch(
-                    search_text=re.sub('/', ' ', desig),
-                    target_text=desig.split('/')[0],
-                    body_type=EBodyType.COMET
-                )
+        # Add to items to be output to csv file
+        name_search_items.append(
+            NameSearch(
+                target=parse_target_name(desig)[1],
+                comparison_text=desig,
+                display_text=desig,
+                body_type=parse_target_name(desig)[0]
             )
+        )
 
 
 ###############################
@@ -139,7 +138,8 @@ with open(name_search_items_csv_file, 'w') as f:
     for item in name_search_items:
         item.__repr__()
         f.write(
-            item.target_text+"," +
-            item.search_text + "," +
+            item.target+"," +
+            item.comparison_text + "," +
+            item.display_text + "," +
             item.body_type+"\n"
         )

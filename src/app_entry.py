@@ -38,7 +38,7 @@ def bare_root() -> FLW.Response:
         }
     )
     res.status_code = 200
-    return res 
+    return res
 
 
 # Associate flask app with flask_restplus configurations via blueprint

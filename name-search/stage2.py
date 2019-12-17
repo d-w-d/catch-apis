@@ -14,35 +14,6 @@ from env import ENV
 
 from stage0 import name_search_items_csv_file
 
-################################################################
-# Import search-name data from csv file created in earlier stage
-################################################################
-
-# Init list of NameSearch instances
-name_search_items: List[NameSearch] = []
-
-# Add asteroid data in csv file as NameSearch instances
-with open(name_search_items_csv_file, encoding="utf-8") as content:
-    lines = content.readlines()
-    for line in lines:
-        parts = line.split(',')
-        try:
-            name_search_items.append(
-                NameSearch(
-                    target_text=parts[0].strip(),
-                    search_text=parts[1].strip(),
-                    body_type=EBodyType[parts[2].strip()]
-                )
-            )
-        except:
-            # Header line will be rejected
-            print('Rejected >>> '+str(parts) +
-                  '>>>'+str(parts[2].strip())+'<<<')
-            print(type(EBodyType['COMET']))
-            print(EBodyType['COMET'].name)
-
-
-# exit()
 
 #########################
 # Build db-connection URI
@@ -63,24 +34,54 @@ session: sqSession.Session = Session()
 # Build function to save entries to DB
 ########################################
 
-# exit()
-
 
 def uploadNameSearchInstancesToDB() -> None:
+
+    ################################################################
+    # Import search-name data from csv file created in earlier stage
+    ################################################################
+
+    # Init list of NameSearch instances
+    name_search_items: List[NameSearch] = []
+
+    # Add asteroid data in csv file as NameSearch instances
+    with open(name_search_items_csv_file, encoding="utf-8") as content:
+        lines = content.readlines()
+        for line in lines:
+            parts = line.split(',')
+            try:
+                name_search_items.append(
+                    NameSearch(
+                        target=parts[0].strip(),
+                        comparison_text=parts[1].strip(),
+                        display_text=parts[2].strip(),
+                        body_type=parts[3].strip()
+                    )
+                )
+            except:
+                # Note: Header line will be rejected
+                print('Rejected >>> '+str(parts) + '<<<')
+
+    for l in name_search_items:
+        print(l)
+    # exit()
+
     isUpserting = 0  # Toggle between upsert behavior and simple-upload
     for item in name_search_items:
         if isUpserting:
             # Use this for simple insertion; conflicts cause errors
             stmt: dml.Insert = insert(NameSearch).values(
-                target_text=item.target_text,
-                search_text=item.search_text,
+                target=item.target,
+                comparison_text=item.comparison_text,
+                display_text=item.display_text,
                 body_type=item.body_type
             )
             # Use this for updating on conflict
             stmt2: dml.Insert = stmt.on_conflict_do_update(
                 constraint='name_search_pkey',  # Get this from `\d small_bodies;`
                 set_=dict(
-                    search_text=item.search_text,
+                    comparison_text=item.comparison_text,
+                    display_text=item.display_text,
                     body_type=item.body_type
                 )
             )

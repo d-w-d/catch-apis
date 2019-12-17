@@ -7,7 +7,7 @@ clear
 echo """
 ===============================================================
 
-    RUNNING PIPELINE TO ADD WORD-SEARCH FUNCTIONALITY TO DB
+    RUNNING PIPELINE TO ADD NAME-SEARCH FUNCTIONALITY TO DB
 
 (Hint: add 1-2 numbered args to run subsections of the pipeline)
 
@@ -41,15 +41,20 @@ runStage() {
 
 if $(runStage 0); then
     echo "<<<RUNNING STAGE 0>>>"
-    python word-search/stage0.py
+    python name-search/stage0.py
 fi
 
 if $(runStage 1); then
     echo "<<<RUNNING STAGE 1>>>"
-    python word-search/stage1.py
+    python name-search/stage1.py
 fi
 
 if $(runStage 2); then
     echo "<<<RUNNING STAGE 2>>>"
-    python word-search/stage2.py
+    python name-search/stage2.py
+fi
+
+if $(runStage 3); then
+    echo "<<<RUNNING STAGE 2>>>"
+    python name-search/stage3.py
 fi

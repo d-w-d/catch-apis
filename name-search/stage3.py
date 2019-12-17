@@ -11,7 +11,7 @@ from stage2 import session
 # Requires running `CREATE EXTENSION pg_trgm;`
 q = session.execute(
     """
-        CREATE INDEX IF NOT EXISTS search_text_idx2 ON name_search USING gist(search_text gist_trgm_ops);
+        CREATE INDEX IF NOT EXISTS search_text_idx2 ON name_search USING gist(comparison_text gist_trgm_ops);
     """
 )
 session.commit()
@@ -26,10 +26,10 @@ t1: float = time.time()
 for i in list(range(0, retrievals)):
     q = session.execute(
         """
-            SELECT *, search_text <-> 'gun' AS dist from name_search
+            SELECT *, comparison_text <-> 'gunn' AS dist from name_search
             -- WHERE search_text % 'van gall'
             -- WHERE similarity(search_text, 'van gall') > 0.35
-            ORDER BY (search_text <-> 'gun')
+            ORDER BY (comparison_text <-> 'gunn')
             -- WHERE search_text ILIKE '%van gaal%' -- Run this only when similarity is unavailable
             LIMIT 10;
         """
