@@ -1,7 +1,7 @@
 
 """
-Demo Routes Module
-Just a bunch of simple routes that you can reference/copy to start developing new routes
+Name-Search Controller
+Routes for submitting
 """
 
 
@@ -15,7 +15,6 @@ from util import jsonify_output
 import flask.wrappers as FLW
 
 API: FRP.Namespace = App.api
-
 logger: logging.Logger = logging.getLogger(__name__)
 
 
@@ -29,22 +28,11 @@ class NameSearch(FRP.Resource):
         description='Target name to search for.'
     )
     @FRP.cors.crossdomain(origin='*')
-    # @jsonify_output
-    # @API.marshal_with(App.search_name_model)
     def get(self: 'NameSearch') -> FLW.Response:
         """Search moving target name."""
 
         name: str = request.args.get('name', '', str)
         top_matches: dict = name_search(name)
-
-        # response: Dict[str, Union[str, dict]] = (
-        #     {
-        #         'name': name,
-        #         'matches': top_matches
-        #     }
-        # )
-        # return response
-
         res: FLW.Response = jsonify(
             {
                 "name": name,
