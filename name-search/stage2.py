@@ -62,11 +62,7 @@ def uploadNameSearchInstancesToDB() -> None:
                 # Note: Header line will be rejected
                 print('Rejected >>> '+str(parts) + '<<<')
 
-    for l in name_search_items:
-        print(l)
-    # exit()
-
-    isUpserting = 0  # Toggle between upsert behavior and simple-upload
+    isUpserting = 1  # Toggle between upsert behavior and simple-upload
     for item in name_search_items:
         if isUpserting:
             # Use this for simple insertion; conflicts cause errors

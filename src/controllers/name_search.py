@@ -8,10 +8,11 @@ Just a bunch of simple routes that you can reference/copy to start developing ne
 import logging
 from typing import Dict, Union, Any, List
 import flask_restplus as FRP
-from flask import request, wrappers as FLW
+from flask import request, wrappers as FLW, jsonify, Response
 from models.query import App
 from services.name_search import name_search
 from util import jsonify_output
+import flask.wrappers as FLW
 
 API: FRP.Namespace = App.api
 
@@ -28,18 +29,27 @@ class NameSearch(FRP.Resource):
         description='Target name to search for.'
     )
     @FRP.cors.crossdomain(origin='*')
-    @jsonify_output
-    @API.marshal_with(App.search_name_model)
-    def get(self: 'NameSearch') -> Dict[str, Union[str, dict]]:
+    # @jsonify_output
+    # @API.marshal_with(App.search_name_model)
+    def get(self: 'NameSearch') -> FLW.Response:
         """Search moving target name."""
 
         name: str = request.args.get('name', '', str)
         top_matches: dict = name_search(name)
 
-        response: Dict[str, Union[str, dict]] = (
+        # response: Dict[str, Union[str, dict]] = (
+        #     {
+        #         'name': name,
+        #         'matches': top_matches
+        #     }
+        # )
+        # return response
+
+        res: FLW.Response = jsonify(
             {
-                'name': name,
-                'matches': top_matches
+                "name": name,
+                "matches": top_matches
             }
         )
-        return response
+        res.status_code = 200
+        return res

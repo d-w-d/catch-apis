@@ -65,13 +65,15 @@ for i, line in enumerate(target_content_lines):
         # E.g. unaccentedName <=== 'du-Chatelet'
         accentedName = temp1[1]
 
+        line_sans_parentheses: str = re.sub(r"\(|\)", '', line)
+
         # Save items to list of SmallBody entries
         name_search_items.append(
             NameSearch(
-                target=parse_target_name(line)[1],
+                target=parse_target_name(line_sans_parentheses)[1],
                 comparison_text=number + " " + unaccentedName,
                 display_text=number + " " + unaccentedName,
-                body_type=parse_target_name(line)[0]
+                body_type=parse_target_name(line_sans_parentheses)[0]
             )
         )
     except:

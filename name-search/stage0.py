@@ -63,7 +63,7 @@ if __name__ == '__main__':
 
     """
 
-    print(CMD)
-    print(sub.PIPE)
-    print(sub.STDOUT)
+    # print(CMD)
+    # print(sub.PIPE)
+    # print(sub.STDOUT)
     sub.Popen(CMD, shell=True, stdout=sub.PIPE, stderr=sub.STDOUT)

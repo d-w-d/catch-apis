@@ -76,4 +76,8 @@ def name_search(search_submission: str) -> List:
                 }
             )
 
+        print("**********")
+        print(found_names)
+        print(found_names[0])
+
     return found_names
