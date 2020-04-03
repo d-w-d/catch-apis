@@ -91,6 +91,5 @@ webencodings==0.5.1
 werkzeug<=0.16.0
 wrapt==1.11.1
 sbpy==0.2
--e git+git://github.com/Small-Bodies-Node/sbsearch.git@v1.0.12#egg=sbsearch
--e git+git://github.com/Small-Bodies-Node/catch.git@v0.4.1#egg=catch
-
+-e git+git://github.com/Small-Bodies-Node/sbsearch.git@v1.0.13#egg=sbsearch
+-e git+git://github.com/Small-Bodies-Node/catch.git@v0.4.2#egg=catch
