@@ -21,7 +21,8 @@ logger: logging.Logger = logging.getLogger(__name__)
 
 def neat_cutout(productid: str, job_id: uuid.UUID, ra: float,
                 dec: float, size: int = 5, prefix: str = '',
-                overwrite: bool = False, thumbnail: bool = True) -> None:
+                overwrite: bool = False, thumbnail: bool = True,
+                preview: bool = True) -> bool:
     """Cutout NEAT image at location.
 
     Parameters
@@ -46,6 +47,9 @@ def neat_cutout(productid: str, job_id: uuid.UUID, ra: float,
 
     thumbnail : bool, optional
         Generate JPEG thumbnail.
+
+    preview : bool, optional
+        Generate JPEG preview (full size) image.
 
 
     Returns
@@ -123,21 +127,29 @@ def neat_cutout(productid: str, job_id: uuid.UUID, ra: float,
     cutout.write(outf, overwrite=True)
     logger.debug('  Wrote {}×{} image'.format(*cutout.shape))
 
-    if thumbnail:
+    if thumbnail or preview:
         zscale: ZScaleInterval = ZScaleInterval()
         vmin: float
         vmax: float
         vmin, vmax = zscale.get_limits(cutout.data)
+
+    if thumbnail:
         thumbf: str = (
             outf.replace(ENV.CATCH_CUTOUT_PATH, ENV.CATCH_THUMBNAIL_PATH)
             .replace('.fits', '_thumb.jpg'))
         array_to_thumbnail(cutout.data, vmin, vmax, thumbf)
 
+    if preview:
+        previewf: str = (
+            outf.replace(ENV.CATCH_CUTOUT_PATH, ENV.CATCH_THUMBNAIL_PATH)
+            .replace('.fits', '.jpg'))
+        array_to_preview(cutout.data, vmin, vmax, previewf)
+
     return True
 
 
 def array_to_thumbnail(data: np.ndarray, vmin: float, vmax: float,
-                       filename: str):
+                       filename: str) -> None:
     """Convert array to JPEG thumbnail and save.
 
 
@@ -159,5 +171,31 @@ def array_to_thumbnail(data: np.ndarray, vmin: float, vmax: float,
     scaled = np.minimum(np.maximum(0, scaled), 255)
     im: Image = Image.fromarray(np.uint8(scaled), 'L')
     im.thumbnail((128, 128))
-    im.save(filename, "JPEG")
+    im.save(filename, "JPEG", quality="web_low")
     logger.debug('  Wrote thumbnail.')
+
+
+def array_to_preview(data: np.ndarray, vmin: float, vmax: float,
+                     filename: str) -> None:
+    """Convert array to JPEG preview (full size) image.
+
+
+    Parameters
+    ----------
+    data : numpy.ndarray
+        Data.
+
+    vmin, vmax : float
+        Color scale data minimum and maximum.
+
+    filename : str
+        File name.
+
+    """
+
+    # reverse y-axis for standard astronomical orientation
+    scaled: np.ndarray = ((data[::-1] - vmin) / (vmax - vmin)) * 255
+    scaled = np.minimum(np.maximum(0, scaled), 255)
+    im: Image = Image.fromarray(np.uint8(scaled), 'L')
+    im.save(filename, "JPEG", quality="web_low")
+    logger.debug('  Wrote preview.')
