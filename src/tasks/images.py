@@ -21,7 +21,7 @@ logger: logging.Logger = logging.getLogger(__name__)
 
 def neat_cutout(productid: str, job_id: uuid.UUID, ra: float,
                 dec: float, size: int = 5, prefix: str = '',
-                overwrite: bool = False, thumbnail: bool = True) -> None:
+                overwrite: bool = False, thumbnail: bool = True) -> bool:
     """Cutout NEAT image at location.
 
     Parameters
@@ -137,7 +137,7 @@ def neat_cutout(productid: str, job_id: uuid.UUID, ra: float,
 
 
 def array_to_thumbnail(data: np.ndarray, vmin: float, vmax: float,
-                       filename: str):
+                       filename: str) -> None:
     """Convert array to JPEG thumbnail and save.
 
 
@@ -158,6 +158,6 @@ def array_to_thumbnail(data: np.ndarray, vmin: float, vmax: float,
     scaled: np.ndarray = ((data[::-1] - vmin) / (vmax - vmin)) * 255
     scaled = np.minimum(np.maximum(0, scaled), 255)
     im: Image = Image.fromarray(np.uint8(scaled), 'L')
-    im.thumbnail((128, 128))
-    im.save(filename, "JPEG")
+    im.thumbnail(np.array(data.shape) // 2)
+    im.save(filename, "JPEG", quality=20)
     logger.debug('  Wrote thumbnail.')
