@@ -54,6 +54,7 @@ def caught(job_id: uuid.UUID) -> List[dict]:
                          ENV.CATCH_THUMBNAIL_BASE_URL)
                 .replace('.fits', '_thumb.jpg')
             )
+            found[-1]['preview_url'] = cutout_url.replace('.fits', '.jpg')
             found[-1]['archive_url'] = images.build_url(row.Obs.productid)
 
     return found
