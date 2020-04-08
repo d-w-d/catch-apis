@@ -15,8 +15,7 @@ from astropy.io import fits
 from astropy.visualization import ZScaleInterval
 
 from env import ENV
-
-logger: logging.Logger = logging.getLogger(__name__)
+from tasks.logger import logger
 
 
 def neat_cutout(productid: str, job_id: uuid.UUID, ra: float,
@@ -69,19 +68,25 @@ def neat_cutout(productid: str, job_id: uuid.UUID, ra: float,
         'data'] + productid.lower().split('_')
     inf: str = '{}.fit.fz'.format(os.path.join(*path))
 
-    outf: str = ('{}/{}{}_ra{:09.5f}_dec{:+09.5f}_{}arcmin.fits'
-                 .format(ENV.CATCH_CUTOUT_PATH, prefix, productid,
-                         ra, dec, size))
+    basename: str = ('{}/{}{}_ra{:09.5f}_dec{:+09.5f}_{}arcmin'
+                     .format(ENV.CATCH_CUTOUT_PATH, prefix, productid,
+                             ra, dec, size))
+    outf: str = '{}.fits'.format(basename)
+    thumbf: str = '{}_thumb.jpg'.format(
+        basename.replace(ENV.CATCH_CUTOUT_PATH, ENV.CATCH_THUMBNAIL_PATH))
+    previewf: str = '{}.jpg'.format(
+        basename.replace(ENV.CATCH_CUTOUT_PATH, ENV.CATCH_THUMBNAIL_PATH))
 
     logger.info('Cutout for {}: {}'.format(
         job_id.hex, ' → '.join((inf, outf))))
 
     if not os.path.exists(inf):
-        logger.debug('  Source file missing.')
+        logger.error('  Source file missing.')
         return False
 
-    if os.path.exists(outf) and not overwrite:
-        logger.debug('  Cutout already exists.')
+    fn: str
+    if (not overwrite) and all([os.path.exists(fn) for fn in (outf, thumbf, previewf)]):
+        logger.debug('  All cutouts already exist.')
         return False
 
     # read data
@@ -124,8 +129,10 @@ def neat_cutout(productid: str, job_id: uuid.UUID, ra: float,
         return False
 
     cutout: CCDData = ccd[i]
-    cutout.write(outf, overwrite=True)
-    logger.debug('  Wrote {}×{} image'.format(*cutout.shape))
+    if (not os.path.exists(outf)) or overwrite:
+        cutout.write(outf, overwrite=True)
+        logger.debug('  Wrote {0} ({1[0]}×{1[1]} image)'.format(
+            outf, cutout.shape))
 
     if thumbnail or preview:
         zscale: ZScaleInterval = ZScaleInterval()
@@ -133,17 +140,13 @@ def neat_cutout(productid: str, job_id: uuid.UUID, ra: float,
         vmax: float
         vmin, vmax = zscale.get_limits(cutout.data)
 
-    if thumbnail:
-        thumbf: str = (
-            outf.replace(ENV.CATCH_CUTOUT_PATH, ENV.CATCH_THUMBNAIL_PATH)
-            .replace('.fits', '_thumb.jpg'))
+    if thumbnail and ((not os.path.exists(thumbf)) or overwrite):
         array_to_thumbnail(cutout.data, vmin, vmax, thumbf)
+        logger.debug('  Wrote {}'.format(thumbf))
 
-    if preview:
-        previewf: str = (
-            outf.replace(ENV.CATCH_CUTOUT_PATH, ENV.CATCH_THUMBNAIL_PATH)
-            .replace('.fits', '.jpg'))
+    if preview and ((not os.path.exists(previewf)) or overwrite):
         array_to_preview(cutout.data, vmin, vmax, previewf)
+        logger.debug('  Wrote {}'.format(previewf))
 
     return True
 
@@ -172,7 +175,6 @@ def array_to_thumbnail(data: np.ndarray, vmin: float, vmax: float,
     im: Image = Image.fromarray(np.uint8(scaled), 'L')
     im.thumbnail((128, 128))
     im.save(filename, "JPEG", quality="web_low")
-    logger.debug('  Wrote thumbnail.')
 
 
 def array_to_preview(data: np.ndarray, vmin: float, vmax: float,
@@ -198,4 +200,3 @@ def array_to_preview(data: np.ndarray, vmin: float, vmax: float,
     scaled = np.minimum(np.maximum(0, scaled), 255)
     im: Image = Image.fromarray(np.uint8(scaled), 'L')
     im.save(filename, "JPEG", quality="web_low")
-    logger.debug('  Wrote preview.')
