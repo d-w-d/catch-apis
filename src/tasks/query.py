@@ -10,10 +10,10 @@ from catch.catch import CatchException
 from services.database_provider import catch_manager
 from tasks import RQueues, images
 from tasks.message import Message, listen_to_task_messenger
+from tasks.logger import logger
 from util import desg_to_prefix
 
 strict_redis: Redis = StrictRedis()
-logger: logging.Logger = logging.getLogger(__name__)
 
 
 def catch_moving_target(desg: str, source: str, cached: bool,
@@ -53,11 +53,11 @@ def catch_moving_target(desg: str, source: str, cached: bool,
         msg.status = 'success'
         msg.text = 'Task complete.'
     except (CatchException, SBSException) as e:
-        logger.error(str(e))
+        logger.error(e)
         msg.status = 'error'
         msg.text = str(e)
     except Exception as e:
-        logger.error(str(e))
+        logger.error(e)
         msg.status = 'error'
         msg.text = 'An unknown error occured.  If this happens again contact us.'
 
@@ -99,7 +99,8 @@ def cutout_moving_targets(job_id: uuid.UUID, overwrite: bool = False,
             if isinstance(obs, (NEATPalomar, NEATMauiGEODSS)):
                 n_cutouts += images.neat_cutout(
                     obs.productid, job_id, found.ra, found.dec,
-                    prefix=prefix, overwrite=overwrite, thumbnail=True)
+                    prefix=prefix, overwrite=overwrite, thumbnail=True,
+                    preview=True)
 
     if not sub_task:
         msg.status = 'success'
