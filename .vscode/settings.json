@@ -8,4 +8,8 @@
   "cSpell.ignoreWords": [
     "desg"
   ],
+  "files.watcherExclude": {
+    "**/.oorb": true,
+    "**/.redis": true
+  },
 }

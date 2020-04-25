@@ -1,0 +1,55 @@
+#!/bin/bash
+
+# ============================================================================
+# This manager script is used to install the oorb and pyoorb packages.
+# Installation is done by downloading and building a binary.  It can also
+# update package data files.
+# ============================================================================
+
+# Load vars defined in .env
+source .env
+
+if [[ ! -e .oorb ]]; then
+  mkdir .oorb
+fi
+
+lapack_build() {
+  # ulimit required to pass tests on ubuntu, but others?
+  ulimit -s unlimited
+  cd .oorb
+  rm -rf lapack-${LAPACK_VERSION#v} ${LAPACK_VERSION}.tar.gz
+  wget https://github.com/Reference-LAPACK/lapack/archive/${LAPACK_VERSION}.tar.gz
+  tar -xf ${LAPACK_VERSION}.tar.gz
+  cd lapack-${LAPACK_VERSION#v}
+  cp make.inc.example make.inc
+  make -j4
+}
+
+oorb_install() {
+  cd .oorb
+  rm -rf oorb-master master.zip
+  if [[ ! -e lapack-${LAPACK_VERSION#v}/liblapack.a ]]; then
+    lapack_build
+  fi
+  wget https://github.com/oorb/oorb/archive/master.zip
+  unzip master.zip
+  cd oorb-master
+  sed -i "s|-llapack|${VIRTUAL_ENV}/../.oorb/lapack-${LAPACK_VERSION#v}/lib{lapack,refblas,tmglib}.a|" configure
+  ./configure gfortran opt --with-pyoorb --prefix=$VIRTUAL_ENV \
+  && make -j4 \
+  && make ephem \
+  && make test \
+  && make install
+}
+
+case $1 in
+install)
+  oorb_install
+  ;;
+*)
+  echo "usage: $NAME {install}"
+  exit 1
+  ;;
+esac
+
+exit 0

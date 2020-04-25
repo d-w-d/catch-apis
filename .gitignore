@@ -11,6 +11,7 @@ _test_generic_webhook
 flask_monitoringdashboard.db
 .redis
 .redis.pid
+.oorb
 node_modules
 catch-images
 **/mpcdata/*
