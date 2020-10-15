@@ -65,6 +65,7 @@ main() {
   echo ">>> Installing python packages..."
   printf "\n\n"
   sleep 1
+  pip install -r requirements.vscode.txt
   pip install -r requirements.txt
 
   ### 8. Link git pre-commit-hook script
@@ -112,6 +113,7 @@ if [[ $jenkins_arg == 'jenkins' ]]; then
   main
 else
   ## Trick to check if this script is being sourced or sh-ed
-  unset BASH_SOURCE 2>/dev/null
-  test ".$0" == ".$BASH_SOURCE" && echo "You must <SOURCE> (not SH) this script!!!" || main "$@"
+  # unset BASH_SOURCE 2>/dev/null
+  # test ".$0" == ".$BASH_SOURCE" && echo "You must <SOURCE> (not SH) this script!!!" || main "$@"
+  main
 fi

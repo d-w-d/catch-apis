@@ -5,7 +5,5 @@
   "editor.snippetSuggestions": "none",
   "python.linting.pylintEnabled": true,
   "python.linting.mypyEnabled": true,
-  "cSpell.ignoreWords": [
-    "desg"
-  ],
+  "python.languageServer": "Pylance"
 }

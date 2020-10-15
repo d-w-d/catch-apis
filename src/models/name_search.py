@@ -1,4 +1,3 @@
-
 """
 ORM Model for table of object names to be used in word-search service
 """
@@ -61,3 +60,4 @@ class NameSearch(base):
             str(self.display_text) + " " + \
             str(self.body_type) + \
             ">"
+
