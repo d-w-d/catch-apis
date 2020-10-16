@@ -60,4 +60,3 @@ class NameSearch(base):
             str(self.display_text) + " " + \
             str(self.body_type) + \
             ">"
-

@@ -8,7 +8,7 @@ import uuid
 
 from .caught import caught
 from .database_provider import catch_manager
-from models.name_search import EBodyType
+from models.body_type import EBodyType
 
 
 class TargetTypePatterns:
