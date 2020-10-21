@@ -50,8 +50,7 @@ def caught(job_id: uuid.UUID) -> List[dict]:
             found[-1]['cutout_url'] = cutout_url
             found[-1]['thumbnail_url'] = (
                 cutout_url
-                .replace(ENV.CATCH_CUTOUT_BASE_URL,
-                         ENV.CATCH_THUMBNAIL_BASE_URL)
+                .replace(ENV.CATCH_CUTOUT_BASE_URL, ENV.CATCH_THUMBNAIL_BASE_URL)
                 .replace('.fits', '_thumb.jpg')
             )
             found[-1]['preview_url'] = cutout_url.replace('.fits', '.jpg')
