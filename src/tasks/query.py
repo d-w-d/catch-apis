@@ -53,15 +53,15 @@ def catch_moving_target(desg: str, source: str, cached: bool,
         msg.status = 'success'
         msg.text = 'Task complete.'
     except (CatchException, SBSException) as e:
-        logger.error(e)
+        logger.error(e, stack_info=True)
         msg.status = 'error'
         msg.text = str(e)
-    except Exception as e:
-        logger.error(e)
+    except:
+        logger.error("An unexpected error occurred.", exc_info=True)
         msg.status = 'error'
-        msg.text = 'An unknown error occured.  If this happens again contact us.'
-
-    strict_redis.publish(RQueues.TASK_MESSAGES, str(msg))
+        msg.text = 'An unexpected error occurred.  If this happens again contact us.'
+    finally:
+        strict_redis.publish(RQueues.TASK_MESSAGES, str(msg))
 
 
 def cutout_moving_targets(job_id: uuid.UUID, overwrite: bool = False,
@@ -87,23 +87,33 @@ def cutout_moving_targets(job_id: uuid.UUID, overwrite: bool = False,
     strict_redis.publish(RQueues.TASK_MESSAGES, str(msg))
 
     n_cutouts: int = 0
-    with catch_manager(save_log=True) as catch:
-        rows: list = catch.caught(job_id)
+    try:
+        with catch_manager(save_log=True) as catch:
+            rows: list = catch.caught(job_id)
 
-        # target cutouts
-        found: Found
-        obs: Obs
-        obj: Obj
-        for found, obs, obj in rows:
-            prefix: str = '{}_'.format(desg_to_prefix(obj.desg))
-            if isinstance(obs, (NEATPalomar, NEATMauiGEODSS)):
-                n_cutouts += images.neat_cutout(
-                    obs.productid, job_id, found.ra, found.dec,
-                    prefix=prefix, overwrite=overwrite, thumbnail=True,
-                    preview=True)
+            # target cutouts
+            found: Found
+            obs: Obs
+            obj: Obj
+            for found, obs, obj in rows:
+                prefix: str = '{}_'.format(desg_to_prefix(obj.desg))
+                if isinstance(obs, (NEATPalomar, NEATMauiGEODSS)):
+                    n_cutouts += images.neat_cutout(
+                        obs.productid, job_id, found.ra, found.dec,
+                        prefix=prefix, overwrite=overwrite, thumbnail=True,
+                        preview=True)
 
-    if not sub_task:
-        msg.status = 'success'
-    msg.text = 'Generated {} cutout{}.'.format(
-        n_cutouts, '' if n_cutouts == 1 else 's')
-    strict_redis.publish(RQueues.TASK_MESSAGES, str(msg))
+        if not sub_task:
+            msg.status = 'success'
+        msg.text = 'Generated {} cutout{}.'.format(
+            n_cutouts, '' if n_cutouts == 1 else 's')
+    except (CatchException, SBSException) as e:
+        logger.error(e, stack_info=True)
+        msg.status = 'error'
+        msg.text = str(e)
+    except:
+        logger.error("An unexpected error occurred.", exc_info=True)
+        msg.status = 'error'
+        msg.text = 'An unexpected error occurred.  If this happens again contact us.'
+    finally:
+        strict_redis.publish(RQueues.TASK_MESSAGES, str(msg))
